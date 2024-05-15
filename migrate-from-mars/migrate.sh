@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load environment variables and flags
-source ../shared/_setup.sh "$@"
+source ./shared/_setup.sh "$@"
 
 # Set source and target directories
 source_dir="$SFM_SAMPLES_DIR"
