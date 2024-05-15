@@ -11,8 +11,8 @@
     <timeStretchAmount>0</timeStretchAmount>
     <fileName>{{SAMPLE_PATH}}</fileName>
     <zone>
-      <startMilliseconds>3</startMilliseconds>
-      <endMilliseconds>78</endMilliseconds>
+      <startMilliseconds>0</startMilliseconds>
+      <endMilliseconds>{{SAMPLE_END_MS}}</endMilliseconds>
     </zone>
   </osc1>
   <osc2>
