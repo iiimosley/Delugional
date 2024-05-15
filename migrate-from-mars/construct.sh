@@ -27,7 +27,7 @@ find "$sample_dir" -mindepth 2 -maxdepth 2 -type d | while read -r dir; do
     kit_file=".tmp/$kit_name.xml"
 
     echo "Creating $kit_file"
-    cp ./templates/kit/base.xml "$kit_file"
+    cp ./templates/kit/head.xml.sample "$kit_file"
 
     find "$dir" -type f -name "*.wav" | while read -r wav; do
         sound_name=$(basename "$wav" | sed 's/.wav//')
@@ -37,20 +37,34 @@ find "$sample_dir" -mindepth 2 -maxdepth 2 -type d | while read -r dir; do
         echo "--> Adding '$sound_name' sound for $local_sample_path ($end_ms ms)"
 
         # Create a sound_xml_block by copying the content of ./templates/sound.xml
-        sound_xml_block=$(<./templates/kit/sound.xml)
+        sound_xml_block=$(<./templates/kit/sound.xml.sample)
 
-        # Replace {{SOUND NAME}}, {{SAMPLE_PATH}}, and {{SAMPLE_END_MS}} with the actual values
+        # Replace {{SOUND_NAME}}, {{SAMPLE_PATH}}, and {{SAMPLE_END_MS}} with the actual values
         sound_xml_block=${sound_xml_block//SOUND_NAME/$sound_name}
         sound_xml_block=${sound_xml_block//SAMPLE_PATH/$local_sample_path}
         sound_xml_block=${sound_xml_block//SAMPLE_END_MS/$end_ms}
 
-        echo "$sound_xml_block"
+        #### RUFF STUFF - not a fun package. Reverting to dumb soluton.
+        # # Add the sound_xml_block to the <soundSources> in the $kit_file
+        # xml esc "$kit_file"
+        # xmlstarlet ed -L -a '/kit/soundSources' -t elem -n sound -v "$sound_xml_block" "$kit_file"
+        # xmlstarlet fo -R -H "$kit_file"
 
-        # Add the sound_xml_block to the <soundSources> in the $kit_file
-        # xmlstarlet ed -L -a /soundSources -t text -v "$sound_xml_block" "$kit_file"
+        echo $sound_xml_block >> "$kit_file"
     done
 
+    # Close tags on the kit file xml
+    cat ./templates/kit/tail.xml.sample >> "$kit_file"
+
+    # Send this on to the Deluge SD card
+    xml fo "$kit_file" > "$kits_dir/$kit_name.xml"
+
+    ### only create one kit if we are testing ###
     if [ "$is_test" == "1" ]; then
         break
     fi
 done
+
+if [ "$is_test" != "1" ]; then
+    rm -rf .tmp
+fi
