@@ -5,33 +5,30 @@ source ./shared/_setup.sh "$@"
 
 # Set source and target directories
 source_dir="$SFM_SAMPLES_DIR"
-target_dir="$DELUGE_SD_DIR/SAMPLES/SfM"
+target_dir="$DELUGE_SD_DIR/SAMPLES/$DELUGE_SAMPLES_SFM_DIR"
 
 cd "$source_dir"
 
 # Find directories ending with "Kits"
 find . -type d -path '*/WAV/*Kits' | while read -r dir; do
-  # Get the immediate root DfM directory for the found "*Kits" subdirectory
-  # & remove " From Mars" for the new deluge sample directory name
-  ### E.G. "808 From Mars/WAV/02. Kits" -> "808"
-  child_dir=$(echo "$dir" | cut -d '/' -f 2)
-  new_dir_name=${child_dir//" From Mars"/}
+  source_drum_dir=$(echo "$dir" | cut -d '/' -f 2) # <-- Get the immediate child directory name
+  target_drum_dir=${source_drum_dir//" From Mars"/}  # <-- Remove " From Mars" from the directory name
 
-  echo "############################################"
-  echo "       Migrating $new_dir_name Kits         "
-  echo "############################################"
+  echo "#######################################################"
+  echo "       Migrating $target_drum_dir Kit Samples          "
+  echo "#######################################################"
   
   # Create a new directory in the samples destination
-  sample_dir="$target_dir/$new_dir_name"
-  echo "$dir --> $sample_dir"
+  target_sample_dir="$target_dir/$target_drum_dir"
+  echo "$dir --> $target_sample_dir"
 
   if [ "$is_test" != "1" ]; then
-    mkdir -p "$sample_dir"
+    mkdir -p "$target_sample_dir"
   fi
 
-  find "$dir" -type d -exec sh -c '(ls -p "{}"|grep />/dev/null)||echo "{}"' \; | while read -r kit_dir; do
+  find "$dir" -type d -exec sh -c '(ls -p "{}"|grep />/dev/null)||echo "{}"' \; | while read -r source_kit_dir; do
     # Model a new directory name from sub path
-    new_dir=`echo "$kit_dir" | awk '{
+    target_kit_dir=`echo "$source_kit_dir" | awk '{
       gsub(/.*\/WAV\/((Drums|One Shots)\/)?([0-9]*\. )?Kits\//, "");
       print
     }' |                       # <-- Remove path prefix
@@ -41,8 +38,8 @@ find . -type d -path '*/WAV/*Kits' | while read -r dir; do
     tr -s ' ' |                # <-- Remove extra spaces
     awk '{$1=$1};1'`           # <-- Trim leading/trailing whitespace
 
-    deluge_kit_dir="$sample_dir/$new_dir"
-    echo "$kit_dir/* --> $deluge_kit_dir/"
+    deluge_kit_dir="$target_sample_dir/$target_kit_dir"
+    echo "$source_kit_dir/* --> $deluge_kit_dir/"
     
     if [ "$is_test" != "1" ]; then
       ## TODO
@@ -51,7 +48,7 @@ find . -type d -path '*/WAV/*Kits' | while read -r dir; do
 
       # Copy the kit directory content to the new destination
       mkdir -p "$deluge_kit_dir"
-      cp -R "$kit_dir"/*.wav "$deluge_kit_dir/"
+      cp -R "$source_kit_dir"/*.wav "$deluge_kit_dir/"
 
       # Remove/merge any hidden files from resource forks
       dot_clean "$deluge_kit_dir"
