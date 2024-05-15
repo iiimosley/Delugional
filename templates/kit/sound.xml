@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <sound>
-  <name>{{SAMPLE_NAME}}</name>
+  <name>SOUND_NAME</name>
   <osc1>
     <type>sample</type>
     <transpose>0</transpose>
@@ -9,10 +8,10 @@
     <reversed>0</reversed>
     <timeStretchEnable>0</timeStretchEnable>
     <timeStretchAmount>0</timeStretchAmount>
-    <fileName>{{SAMPLE_PATH}}</fileName>
+    <fileName>SAMPLE_PATH</fileName>
     <zone>
       <startMilliseconds>0</startMilliseconds>
-      <endMilliseconds>{{SAMPLE_END_MS}}</endMilliseconds>
+      <endMilliseconds>SAMPLE_END_MS</endMilliseconds>
     </zone>
   </osc1>
   <osc2>
