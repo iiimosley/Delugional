@@ -1,12 +1,12 @@
-## Deluging from Mars
-A collection of scripts to assist in loading up your Deluge with the wonderful [Samples from Mars](https://samplesfrommars.com/).
+## Delugional 
+A collection of wild-haired scripts to assist in loading kits & synths from external sources into your Deluge. 
 
 ### Requirements  
-- You must have the ability to run shell scripts
+- Ability to run `bash` scripts
   - Windows Users may use [WSL](https://learn.microsoft.com/en-us/windows/wsl/) to execute the scripts ([installation docs](https://learn.microsoft.com/en-us/windows/wsl/install))
 - Deluge's SD card is mounted and writeable
-- All Samples from Mars Drums are within a singular directory
-- All Samples from Mars Drums retained their original file structure when downloaded
+
+*Further requirements dependent on scripts executed*
 
 ## Getting Started
 ### Setup Environment Variables
@@ -21,10 +21,25 @@ cp .env.example .env
 ```
 
 #### Environment Variables
-- `DELUGE_SD_DIR`: location of your Deluge's SD card
+- `DELUGE_SD_DIR`: mounted location for your Deluge's SD card
 - `DELUGE_SAMPLES_SFM_DIR_NAME`: your preferred directory name for all migrated Samples from Mars kits 
-- `SFM_SAMPLES_DIR`: location of all Sounds From Mars samples
+- `SFM_SAMPLES_DIR`: local directory for all Samples From Mars samples
 
-### Available scripts
-- `migrate` - Loads Samples from Mars kit samples onto the Deluge's `SAMPLES` directory
-- `construct` - Builds kit XML files into the Deluge's `KIT` from Deluge's Samples from Mars directory
+## Available Projects
+⚠️ *__Please run all scripts from root project directory__* ⚠️
+
+### Migrating from Mars
+Migrates samples and builds kit files from the [Samples from Mars](https://samplesfrommars.com/) collections.
+
+#### Requirements
+- All Samples from Mars Drums are within a singular directory
+- All Samples from Mars Drums retained their original file structure when downloaded
+
+#### Executable Scripts
+- `migrate` 
+  - **Execution:** `./migrate-from-mars/migrate.sh`
+  - **About:** Loads Samples from Mars kit samples onto the Deluge's `SAMPLES` directory
+- `construct`
+  - ⚠️ Must complete `migrate` execution prior to running this script ⚠️   
+  - **Execution:** `./migrate-from-mars/construct.sh`
+  - **About:** Builds Kit XML files into the Deluge's `KITS` directory from Deluge's Samples from Mars directory
